@@ -1,13 +1,9 @@
-/* Nền chính */
-body {
-  background: #000;
-  height: 100vh;
-  overflow: hidden;
-  margin: 0;
-  position: relative;
-}
 
-/* Nút tròn chung */
+#btn-make {
+  bottom: 200px;
+  right: 30px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
 .div_btn {
   position: fixed;
   cursor: pointer;
@@ -19,38 +15,18 @@ body {
   line-height: 58px;
   text-align: center;
   z-index: 999;
-  background-color: rgba(0, 0, 0, 0.3);
 }
-
-/* Vị trí riêng từng nút */
-#btn-make {
-  bottom: 200px;
-  right: 30px;
-}
-
 #div_support {
   bottom: 80px;
   right: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+body {
+  background: #000;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Sao */
-.star {
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-  animation: twinkle 2s infinite alternate;
-}
-
-@keyframes twinkle {
-  0% { opacity: 0.2; }
-  50% { opacity: 1; }
-  100% { opacity: 0.2; }
-}ui .love {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -225px 0 0 -225px;
-}
 #ui .love:last-child .love_word {
   color: #fff;
   font-size: 2rem;
