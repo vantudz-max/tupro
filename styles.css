@@ -1,0 +1,43 @@
+body {
+  background: radial-gradient(circle at center, #ffb6c1, #ff69b4, #ff1493);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  flex-wrap: wrap;
+  animation: bgPulse 5s infinite alternate;
+}
+
+/* Hiệu ứng nền chuyển màu nhẹ */
+@keyframes bgPulse {
+  from { background: radial-gradient(circle at center, #ffcce6, #ff66b2, #ff1493); }
+  to   { background: radial-gradient(circle at center, #ffb6c1, #ff3385, #ff0066); }
+}
+
+/* Hiệu ứng tim đập */
+.love {
+  position: relative;
+  animation: heartbeat 1.5s infinite;
+  transform: scale(1);
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Hiệu ứng chữ phát sáng */
+.love_word {
+  font-family: 'Brush Script MT', cursive;
+  font-size: 52px;
+  color: #fff;
+  text-shadow: 0 0 10px #fff, 0 0 20px #ff99cc, 0 0 40px #ff66b2, 0 0 60px #ff1493;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* Chữ sáng nhấp nháy */
+@keyframes glow {
+  from { text-shadow: 0 0 10px #fff, 0 0 20px #ff99cc, 0 0 40px #ff66b2; }
+  to   { text-shadow: 0 0 20px #fff, 0 0 40px #ff99cc, 0 0 80px #ff66b2; }
+}
