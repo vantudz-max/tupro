@@ -1,176 +1,514 @@
-<!doctype html>
-<html lang="vi">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Trái tim đập - Phiên bản Thủ khoa Lý</title>
-  <style>
-    :root{--bg1:#ff9a9e;--bg2:#ffd1dc;--card:rgba(255,255,255,0.9);--accent:#ff4d6d}
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-    body{background:linear-gradient(135deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;padding:32px}
-    .card{width:min(760px,96vw);padding:28px;border-radius:18px;background:var(--card);box-shadow:0 12px 30px rgba(0,0,0,0.12);text-align:center}
-    h1{margin:0 0 8px;font-size:26px;color:#3a2b2b}
-    p{margin:0 0 18px;color:#4b3333}
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Chúc bé của anh có 20/10 thật </title>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="icon" type="image/png" href="./assets/ico_logo.png" sizes="16x16">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;700&amp;family=Noto+Sans+JP:wght@300;400;500;700&amp;family=Noto+Sans+KR:wght@300;400;500;700&amp;family=Noto+Sans+SC:wght@300;400;500;700&amp;family=Noto+Sans+TC:wght@300;400;500;700&amp;family=Noto+Sans+Arabic:wght@300;400;500;700&amp;family=Noto+Sans+Devanagari:wght@300;400;500;700&amp;family=Noto+Sans+Hebrew:wght@300;400;500;700&amp;family=Noto+Sans+Thai:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="/en/PagMemoryHeart/assets/style.css" rel="stylesheet">
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+      }
+    }
+    </script>
+    <style>
+        .text-white {
+            color: white !important;
+        }
 
-    .stage{position:relative;padding:28px 10px}
+        .btn-fullscreen-toggle {
+            background-color: rgba(255, 105, 180, 0.3);
+            border: 1px solid rgba(255, 105, 180, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
 
-    /* main heart */
-    .heart-svg{width:220px;height:220px;cursor:pointer;display:inline-block;filter:drop-shadow(0 18px 30px rgba(0,0,0,0.15));transition:transform 160ms ease}
+        .btn-fullscreen-toggle:hover {
+            background-color: rgba(255, 105, 180, 0.6);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
 
-    /* two-layer pulse: main scale + outer ring */
-    .pulse-ring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:240px;height:240px;border-radius:50%;pointer-events:none;opacity:0}
-    .pulse-ring.show{animation:ring 700ms ease-out forwards}
-    @keyframes ring{0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.6}100%{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+        body.portrait-mode #landscape-warning {
+            display: flex;
+            opacity: 1;
+        }
 
-    /* heart beat animations */
-    @keyframes bigBeat{0%{transform:scale(1)}30%{transform:scale(1.28)}45%{transform:scale(0.96)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
-    @keyframes smallBeat{0%{transform:scale(1)}30%{transform:scale(1.12)}45%{transform:scale(0.98)}100%{transform:scale(1)}}
+        /* ---- LANDSCAPE WARNING SCREEN ---- */
+        #landscape-warning {
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, #1c1a3a 0%, #0c0a1f 100%);
+            color: #e0eaff;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+        }
 
-    .heart-svg.big-beat{animation:bigBeat 520ms cubic-bezier(.2,.8,.2,1)}
-    .heart-svg.small-beat{animation:smallBeat 360ms cubic-bezier(.2,.8,.2,1)}
+        body.portrait #landscape-warning {
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-    /* inner glow */
-    .glow{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:260px;height:260px;border-radius:50%;filter:blur(18px);opacity:0.08;pointer-events:none}
+        #landscape-warning .warning-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 2.5rem;
+            border-radius: 20px;
+            background: rgba(28, 26, 58, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(173, 216, 230, 0.3);
+            box-shadow:
+                0 0 40px rgba(78, 88, 216, 0.5),
+                0 0 15px rgba(255, 255, 255, 0.1),
+                inset 0 0 8px rgba(173, 216, 230, 0.2);
+            transform: scale(0.95);
+            opacity: 0;
+            animation: fadeInContent 0.6s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
 
-    .controls{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-    button{padding:10px 14px;border-radius:10px;border:0;font-weight:600;cursor:pointer}
-    .btn-soft{background:linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.9));}
-    .btn-color{background:linear-gradient(90deg,var(--accent),#ff98b3);color:white}
+        @keyframes fadeInContent {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-    .note{font-size:13px;color:#6a4f4f;margin-top:12px}
+        #landscape-warning h1 {
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(230, 230, 255, 0.8), 0 0 4px rgba(255, 255, 255, 1);
+        }
 
-    /* small hearts burst */
-    .mini{position:fixed;pointer-events:none;z-index:9999}
+        #landscape-warning h1:nth-of-type(2) {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
 
-    @media (max-width:480px){.heart-svg{width:160px;height:160px}.pulse-ring{width:180px;height:180px}}
-  </style>
+        #landscape-warning p {
+            font-size: 1.1rem;
+            color: #c0c8ff;
+            line-height: 1.5;
+            text-shadow: 0 0 6px rgba(192, 200, 255, 0.7);
+        }
+
+        #landscape-warning p:last-of-type {
+            margin-top: 1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        #landscape-warning .stars-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        #landscape-warning .stars-bg::before,
+        #landscape-warning .stars-bg::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image:
+                radial-gradient(circle, #fff 1px, transparent 1px),
+                radial-gradient(circle, #c0c8ff 1px, transparent 1px),
+                radial-gradient(circle, #fff 0.5px, transparent 0.5px);
+            background-size: 100px 100px, 150px 150px, 60px 60px;
+            background-position: 0 0, 50px 50px, 30px 30px;
+            opacity: 0;
+            animation: stars-move 30s linear infinite, fadeInStars 1s ease-out forwards;
+        }
+
+        #landscape-warning .stars-bg::after {
+            background-size: 150px 150px, 80px 80px, 120px 120px;
+            background-position: 75px 75px, 40px 40px, 10px 10px;
+            animation-duration: 45s;
+        }
+
+        @keyframes fadeInStars {
+            to {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes stars-move {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-50%);
+            }
+        }
+
+        #romantic-title {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%);
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-family: 'Noto Sans', cursive;
+            text-align: center;
+            max-width: 60%;
+            line-height: 1.2;
+            word-wrap: break-word;
+            text-shadow: 0 0 15px #ff69b4, 0 0 5px #ffffff;
+            animation: glow 2s ease-in-out infinite alternate;
+            padding: 0 10px;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff69b4, 0 0 5px #ffffff;
+            }
+            to {
+                text-shadow: 0 0 20px #ff69b4, 0 0 10px #ffffff;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #romantic-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff4d6d, #e6395c);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.6);
+        }
+
+        .music-btn:active {
+            transform: scale(0.95);
+        }
+
+        .music-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+        }
+
+        .volume-control {
+            width: 120px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 77, 109, 0.5);
+            margin-top: 10px;
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .volume-control.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .volume-control input {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        .volume-control input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ff4d6d;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .volume-control input::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #ff4d6d;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
+        /* Mobile adjustments */
+        @media only screen and (max-width: 768px) {
+            .music-control {
+                right: 15px;
+            }
+
+            .music-btn {
+                width: 35px;
+                height: 35px;
+            }
+
+            .music-btn svg {
+                width: 22px;
+                height: 22px;
+            }
+
+            .volume-control {
+                width: 100px;
+                margin-top: 8px;
+            }
+
+            .volume-control input {
+                height: 10px;
+            }
+
+            .volume-control input::-webkit-slider-thumb {
+                width: 18px;
+                height: 18px;
+            }
+
+            .volume-control input::-moz-range-thumb {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    </style>
 </head>
-<body>
-  <div class="card">
-    <h1>Trái tim đập — Phiên bản "Thủ khoa Lý"</h1>
-    <p>Click trái tim để nó đập theo nhịp "bùm-bụp" (mô phỏng kiểu trong phim/trend). Có sẵn nút bật/tắt tự đập liên tục.</p>
-
-    <div class="stage">
-      <div class="pulse-ring" id="ring"></div>
-      <div class="glow" id="glow" style="background:radial-gradient(circle at 50% 40%, rgba(255,90,120,0.25), rgba(255,90,120,0.06));"></div>
-
-      <!-- SVG heart (keeps same path for smooth scaling) -->
-      <svg id="mainHeart" class="heart-svg" viewBox="0 0 32 29" role="img" aria-label="Trái tim">
-        <defs>
-          <linearGradient id="gA" x1="0%" x2="100%" y1="0%" y2="100%">
-            <stop offset="0%" stop-color="#ff4d6d" />
-            <stop offset="100%" stop-color="#ff98b3" />
-          </linearGradient>
-          <filter id="soften" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="1.6" result="b" />
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <path id="hpath" d="M23.6 0c-2 0-3.8.9-4.9 2.3C17.2.9 15.4 0 13.4 0 9 0 5.9 3.4 5.9 7.6c0 6.2 9.3 11.5 12.6 13.6.5.3 1.1.3 1.6 0 3.4-2.2 12.6-7.5 12.6-13.6C35.8 3.4 32.8 0 28.4 0c-2 0-3.8.9-4.8 2.3C18.9.9 17.1 0 15.1 0z" fill="url(#gA)" transform="translate(-3 -0.5) scale(0.9)" filter="url(#soften)"/>
-      </svg>
+<body style="overflow: hidden; position: fixed; width: 100%; height: 100%; background: radial-gradient(circle, #200020 0%, #000000 100%);">
+    <div id="landscape-warning">
+        <div class="warning-content">
+            <h1>Rotate Your Device</h1>
+            <h1>Please Turn to Landscape</h1>
+            <p>For the best experience, view this page in landscape mode.</p>
+            <p>Rotate your device now!</p>
+            <div class="stars-bg"></div>
+        </div>
     </div>
-
-    <div class="controls">
-      <button class="btn-soft" id="toggleAuto">Bật tự đập</button>
-      <button class="btn-color" id="colorize">Đổi palette</button>
-      <button class="btn-soft" id="download">Tải HTML</button>
+    <h1 id="romantic-title"> Tú chúc bé mãi vui mãi là ebe của Tú nhá</h1>
+    <button id="toggle-fullscreen" class="text-white btn-fullscreen-toggle" style="position: absolute; top: 15px; left: 15px; z-index: 999;">
+        <i id="fullscreen-icon" class="text-white fa-solid fa-expand"></i>
+    </button>
+        <div class="music-control">
+        <button class="music-btn" id="musicBtn" aria-label="Toggle music">
+            <svg id="playIcon" viewBox="0 0 24 24" style="display: block;">
+                <path d="M8 5v14l11-7z"></path>
+            </svg>
+            <svg id="pauseIcon" viewBox="0 0 24 24" style="display: none;">
+                <path d="M6 19h4V5H6zm8-14v14h4V5z"></path>
+            </svg>
+        </button>
+        <div class="volume-control" id="volumeControl">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" aria-label="Volume control">
+        </div>
     </div>
+    <audio id="backgroundMusic" loop="" preload="auto">
+        <source src="https://www.dedicapag.com/en/PagMemoryHeart/music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+        <script>
+        window.dataMemoryHeartLoveLoom = {"template":"birthday-v2","data":{"title":"Ch\u00fac b\u00e9 c\u1ee7a anh c\u00f3 20\/10 th\u1eadt ","messages":[" T\u00fa ch\u00fac b\u00e9 m\u00e3i vui m\u00e3i l\u00e0 ebe c\u1ee7a T\u00fa nh\u00e1"],"images":[],"heartColor":"#ff1493"}};
+    </script>
+    <script type="module" src="https://www.dedicapag.com/en/PagMemoryHeart/assets/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fullscreenManager = {
+                toggleBtn: document.getElementById('toggle-fullscreen'),
+                iconElement: document.getElementById('fullscreen-icon'),
+                isFullscreen: function() {
+                    return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+                },
+                updateIcon: function() {
+                    if (!this.iconElement) return;
+                    if (this.isFullscreen()) {
+                        this.iconElement.classList.remove('fa-expand');
+                        this.iconElement.classList.add('fa-compress');
+                    } else {
+                        this.iconElement.classList.remove('fa-compress');
+                        this.iconElement.classList.add('fa-expand');
+                    }
+                },
+                toggle: function() {
+                    if (!this.isFullscreen()) {
+                        const element = document.documentElement;
+                        if (element.requestFullscreen) {
+                            element.requestFullscreen();
+                        } else if (element.mozRequestFullScreen) {
+                            element.mozRequestFullScreen();
+                        } else if (element.webkitRequestFullscreen) {
+                            element.webkitRequestFullscreen();
+                        } else if (element.msRequestFullscreen) {
+                            element.msRequestFullscreen();
+                        }
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                    }
+                },
+                init: function() {
+                    if (this.toggleBtn) {
+                        this.toggleBtn.addEventListener('click', () => this.toggle());
+                        document.addEventListener('fullscreenchange', () => this.updateIcon());
+                        document.addEventListener('webkitfullscreenchange', () => this.updateIcon());
+                        document.addEventListener('mozfullscreenchange', () => this.updateIcon());
+                        document.addEventListener('MSFullscreenChange', () => this.updateIcon());
+                    }
+                }
+            };
+            fullscreenManager.init();
+        });
+                function setupMusicControls() {
+            const music = document.getElementById("backgroundMusic");
+            const musicBtn = document.getElementById("musicBtn");
+            const playIcon = document.getElementById("playIcon");
+            const pauseIcon = document.getElementById("pauseIcon");
+            const volumeSlider = document.getElementById("volumeSlider");
+            const volumeControl = document.getElementById("volumeControl");
 
-    <div class="note">Gợi ý: nhấn trái tim để thử nhịp "bùm-bụp" (1 mạnh, 1 nhẹ). Bật "tự đập" để thấy loop.</div>
-  </div>
+            if (!music || !musicBtn || !volumeSlider || !volumeControl) {
+                console.error('Music or control elements not found');
+                return;
+            }
 
-  <script>
-    const heart = document.getElementById('mainHeart');
-    const ring = document.getElementById('ring');
-    const toggleAuto = document.getElementById('toggleAuto');
-    const colorize = document.getElementById('colorize');
-    const downloadBtn = document.getElementById('download');
-    let auto = false;
-    let autoInterval = null;
+            music.volume = volumeSlider.value;
 
-    // one 'beat sequence' = strong beat then quick softer beat ("bùm - bụp")
-    function beatOnce(){
-      // strong beat
-      heart.classList.remove('big-beat');
-      void heart.offsetWidth; // restart
-      heart.classList.add('big-beat');
-      // show ring
-      ring.classList.remove('show'); void ring.offsetWidth; ring.classList.add('show');
-      // spawn mini hearts
-      spawnMini(12);
-      // schedule second small beat
-      setTimeout(()=>{
-        heart.classList.remove('small-beat'); void heart.offsetWidth; heart.classList.add('small-beat');
-      }, 170);
-    }
+            music.load();
+            music.currentTime = 0;
+            music.play().then(() => {
+                console.log('Autoplay successful at:', music.currentTime);
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            }).catch(error => {
+                console.warn('Autoplay blocked:', error.message);
+            });
 
-    // click to trigger single beat sequence
-    heart.addEventListener('click', (e)=>{
-      beatOnce();
-    });
+            function toggleMusic() {
+                if (music.paused) {
+                    music.play().then(() => {
+                        console.log('Music playing at:', music.currentTime);
+                        playIcon.style.display = 'none';
+                        pauseIcon.style.display = 'block';
+                    }).catch(error => {
+                        console.error('Error playing audio:', error.message);
+                    });
+                } else {
+                    music.pause();
+                    console.log('Music paused at:', music.currentTime);
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                }
+            }
 
-    // auto toggle
-    toggleAuto.addEventListener('click', ()=>{
-      auto = !auto;
-      if(auto){
-        toggleAuto.textContent = 'Tắt tự đập';
-        // play a loop with rhythm: 800ms between sequences
-        beatOnce();
-        autoInterval = setInterval(beatOnce, 900);
-      } else {
-        toggleAuto.textContent = 'Bật tự đập';
-        clearInterval(autoInterval); autoInterval = null;
-      }
-    });
+            musicBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMusic();
+                if (!volumeControl.classList.contains('visible')) {
+                    volumeControl.classList.add('visible');
+                    clearTimeout(hideVolumeTimeout);
+                    hideVolumeTimeout = setTimeout(() => volumeControl.classList.remove('visible'), 2000);
+                } else {
+                    volumeControl.classList.remove('visible');
+                }
+            });
 
-    // palette options
-    const palettes = [ ['#ff4d6d','#ff98b3'], ['#ff8a65','#ffd166'], ['#7b61ff','#a07bff'], ['#ff6b6b','#ffd1e0'] ];
-    colorize.addEventListener('click', ()=>{
-      const pick = palettes[Math.floor(Math.random()*palettes.length)];
-      const stops = document.querySelectorAll('#gA stop');
-      stops[0].setAttribute('stop-color', pick[0]);
-      stops[1].setAttribute('stop-color', pick[1]);
-      document.documentElement.style.setProperty('--accent', pick[0]);
-      document.getElementById('glow').style.background = `radial-gradient(circle at 50% 40%, ${pick[0]}55, ${pick[1]}08)`;
-    });
+            let hideVolumeTimeout = null;
+            volumeSlider.addEventListener('input', (e) => {
+                music.volume = e.target.value;
+                console.log('Volume set to:', music.volume);
+                clearTimeout(hideVolumeTimeout);
+                volumeControl.classList.add('visible');
+            });
 
-    // mini hearts burst
-    function spawnMini(n){
-      for(let i=0;i<n;i++){
-        const el = document.createElement('div');
-        el.className = 'mini';
-        const size = 8 + Math.random()*12;
-        el.style.width = size+'px'; el.style.height = size+'px';
-        el.style.left = (window.innerWidth/2 - size/2 + (Math.random()-0.5)*60) + 'px';
-        el.style.top = (window.innerHeight/2 - size/2 + (Math.random()-0.5)*40) + 'px';
-        el.style.borderRadius = '50%';
-        el.style.background = ['#ff5e99','#ffd166','#7b61ff','#ff8a65'][Math.floor(Math.random()*4)];
-        document.body.appendChild(el);
-        const dx = (Math.random()-0.5)*200;
-        const dy = - (80 + Math.random()*220);
-        const dur = 900 + Math.random()*700;
-        el.animate([
-          {transform: 'translate(0,0) scale(1)', opacity:1},
-          {transform: `translate(${dx}px, ${dy}px) scale(0.6)`, opacity:0}
-        ], {duration: dur, easing: 'cubic-bezier(.2,.8,.2,1)'}).onfinish = ()=>el.remove();
-      }
-    }
+            volumeSlider.addEventListener('change', () => {
+                hideVolumeTimeout = setTimeout(() => volumeControl.classList.remove('visible'), 2000);
+            });
 
-    // download page
-    downloadBtn.addEventListener('click', ()=>{
-      const html = `<!doctype html>${document.documentElement.outerHTML}`;
-      const blob = new Blob([html],{type:'text/html'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'trai_tim_thu_khoa_ly.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
+            volumeControl.addEventListener('mouseenter', () => clearTimeout(hideVolumeTimeout));
+            volumeControl.addEventListener('mouseleave', () => {
+                hideVolumeTimeout = setTimeout(() => volumeControl.classList.remove('visible'), 2000);
+            });
 
-    // keyboard accessibility
-    heart.setAttribute('tabindex','0');
-    heart.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); heart.click(); } });
+            volumeSlider.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                clearTimeout(hideVolumeTimeout);
+            });
+            volumeSlider.addEventListener('touchend', () => {
+                hideVolumeTimeout = setTimeout(() => volumeControl.classList.remove('visible'), 2000);
+            });
 
-    // optional: start with a gentle single pulse to show effect
-    setTimeout(()=>{ heart.classList.add('small-beat'); setTimeout(()=>heart.classList.remove('small-beat'),400); },600);
-  </script>
-</body>
-</html>
+            document.addEventListener('click', (e) => {
+                if (!volumeControl.contains(e.target) && !musicBtn.contains(e.target)) {
+                    volumeControl.classList.remove('visible');
+                    clearTimeout(hideVolumeTimeout);
+                }
+            });
+
+            music.addEventListener('loadeddata', () => console.log('Audio data loaded'));
+            music.addEventListener('error', (e) => console.error('Audio error:', e.message));
+            music.addEventListener('play', () => console.log('Music play event'));
+            music.addEventListener('pause', () => console.log('Music pause event'));
+        }
+
+        // Initialize music controls
+        setupMusicControls();
+            </script>
+
+<canvas data-engine="three.js r157" width="1227" height="912" style="display: block; width: 982px; height: 730px; touch-action: none;"></canvas></body></html>
