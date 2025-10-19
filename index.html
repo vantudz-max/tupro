@@ -67,4 +67,63 @@
   .floating-heart::before { top: -10px; left: 0; }
   .floating-heart::after { top: 0; left: 10px; }
 
-  @keyf
+  @keyframes float {
+    0% { transform: translateY(0) scale(1) rotate(-45deg); opacity: 0.9; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-100vh) scale(1.5) rotate(-45deg); opacity: 0; }
+  }
+
+  /* Lời chúc hiện dần */
+  .message {
+    color: white;
+    font-size: 1.8em;
+    text-align: center;
+    text-shadow: 0 0 10px #ff99cc, 0 0 20px #ff6699, 0 0 40px #ff0066;
+    margin-top: 50px;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+  <div class="heart"></div>
+
+  <div id="messages">
+    <div class="message hidden">Anh chúc bé có 20/10 thật vui nháaa !!!! Moaw moaw❤️</div>
+    <div class="message hidden">Bé iu của Tú giỏi nhất thế giới ❤️</div>
+    <div class="message hidden">Anh thương bé nhìu nhắm lun :3333</div>
+  </div>
+
+<script>
+  // Hiện từng dòng chữ
+  const msgs = document.querySelectorAll(".message");
+  let i = 0;
+  function showNext() {
+    if (i < msgs.length) {
+      msgs[i].classList.remove("hidden");
+      i++;
+      setTimeout(showNext, 3000);
+    }
+  }
+  showNext();
+
+  // Tạo tim bay
+  function createFloatingHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("floating-heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+    heart.style.opacity = Math.random();
+    heart.style.transform = "rotate(-45deg) scale(" + (0.5 + Math.random()) + ")";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 8000);
+  }
+  setInterval(createFloatingHeart, 400);
+</script>
+</body>
+</html>
