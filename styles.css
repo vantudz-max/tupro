@@ -1,9 +1,12 @@
-
-#btn-make {
-  bottom: 200px;
-  right: 30px;
-  background-color: rgba(0, 0, 0, 0.3);
+body {
+  background: #000;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  font-family: "Dosis", sans-serif;
 }
+
+/* Nút tròn chung */
 .div_btn {
   position: fixed;
   cursor: pointer;
@@ -15,17 +18,20 @@
   line-height: 58px;
   text-align: center;
   z-index: 999;
+  background-color: rgba(0, 0, 0, 0.3);
 }
+
+/* Vị trí riêng từng nút */
+#btn-make {
+  bottom: 200px;
+  right: 30px;
+}
+
 #div_support {
   bottom: 80px;
   right: 20px;
-  background-color: rgba(0, 0, 0, 0.3);
 }
-body {
-  background: #000;
-  height: 100vh;
-  overflow: hidden;
-}
+
 
 #ui .love {
   position: absolute;
