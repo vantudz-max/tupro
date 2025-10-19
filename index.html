@@ -1,129 +1,90 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy 20/10 Bé Iuuu ❤️</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Trái tim 3D - Tú chúc bé ❤️</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    height: 100vh;
-    overflow: hidden;
-    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-  }
-
-  /* Trái tim chính */
-  .heart {
-    width: 120px;
-    height: 120px;
-    position: relative;
-    transform: rotate(-45deg);
-    animation: beat 1s infinite ease-in-out;
-    background: radial-gradient(circle at 30% 30%, #ff5e7e, #ff2f6e);
-    box-shadow: 0 0 20px #ff5e7e;
-  }
-  .heart::before,
-  .heart::after {
-    content: "";
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle at 30% 30%, #ff5e7e, #ff2f6e);
+  html,body { height:100%; margin:0; background:#000; font-family: Arial, sans-serif; }
+  #container { width:100%; height:100vh; overflow:hidden; position:relative; }
+  .ui {
     position: absolute;
-    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 12px;
+    display:flex;
+    gap:10px;
+    z-index: 10;
   }
-  .heart::before { top: -60px; left: 0; }
-  .heart::after { left: 60px; top: 0; }
-
-  @keyframes beat {
-    0%, 100% { transform: rotate(-45deg) scale(1); }
-    50% { transform: rotate(-45deg) scale(1.25); }
+  .btn {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
   }
-
-  /* Nhiều trái tim bay */
-  .floating-heart {
+  .btn:hover { transform: translateY(-2px); }
+  .title {
+    color: #fff;
+    text-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  }
+  #credit {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #ff3b6f;
-    transform: rotate(-45deg);
-    border-radius: 0;
-    opacity: 0.8;
-    animation: float 8s linear infinite;
+    bottom: 12px;
+    left: 12px;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    z-index:10;
   }
-  .floating-heart::before,
-  .floating-heart::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #ff3b6f;
-    border-radius: 50%;
-  }
-  .floating-heart::before { top: -10px; left: 0; }
-  .floating-heart::after { top: 0; left: 10px; }
-
-  @keyframes float {
-    0% { transform: translateY(0) scale(1) rotate(-45deg); opacity: 0.9; }
-    50% { opacity: 1; }
-    100% { transform: translateY(-100vh) scale(1.5) rotate(-45deg); opacity: 0; }
-  }
-
-  /* Lời chúc hiện dần */
-  .message {
-    color: white;
-    font-size: 1.8em;
-    text-align: center;
-    text-shadow: 0 0 10px #ff99cc, 0 0 20px #ff6699, 0 0 40px #ff0066;
-    margin-top: 50px;
-    opacity: 0;
-    animation: fadeIn 2s forwards;
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-  .hidden { display: none; }
 </style>
 </head>
 <body>
-  <div class="heart"></div>
+<div id="container"></div>
 
-  <div id="messages">
-    <div class="message hidden">Anh chúc bé có 20/10 thật vui nháaa !!!! Moaw moaw❤️</div>
-    <div class="message hidden">Bé iu của Tú giỏi nhất thế giới ❤️</div>
-    <div class="message hidden">Anh thương bé nhìu nhắm lun :3333</div>
-  </div>
+<div class="ui">
+  <div class="title">Tú chúc bé mãi vui, mãi là bé iu của Tú ❤️</div>
+  <button id="playBtn" class="btn">▶ Phát nhạc (Phép Màu)</button>
+  <button id="muteBtn" class="btn">🔊 Tắt tiếng</button>
+</div>
+
+<div id="credit">Bấm Play để bật nhạc • Thay file "phepmo.mp3" nếu muốn</div>
+
+<!-- Three.js từ CDN -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.151.3/build/three.min.js"></script>
+<!-- Optional: OrbitControls (dùng để rê thử) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.151.3/examples/js/controls/OrbitControls.js"></script>
 
 <script>
-  // Hiện từng dòng chữ
-  const msgs = document.querySelectorAll(".message");
-  let i = 0;
-  function showNext() {
-    if (i < msgs.length) {
-      msgs[i].classList.remove("hidden");
-      i++;
-      setTimeout(showNext, 3000);
-    }
-  }
-  showNext();
+/* ========== Cấu hình và khởi tạo cơ bản ========== */
+const container = document.getElementById('container');
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x000000, 0.0009);
 
-  // Tạo tim bay
-  function createFloatingHeart() {
-    const heart = document.createElement("div");
-    heart.classList.add("floating-heart");
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (5 + Math.random() * 5) + "s";
-    heart.style.opacity = Math.random();
-    heart.style.transform = "rotate(-45deg) scale(" + (0.5 + Math.random()) + ")";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 8000);
-  }
-  setInterval(createFloatingHeart, 400);
-</script>
-</body>
-</html>
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 2000);
+camera.position.set(0, 25, 140);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+/* Controls (chỉ dùng để kiểm tra/tùy chỉnh - có thể tắt) */
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 60;
+controls.maxDistance = 300;
+controls.autoRotate = false;
+
+/* Ánh sáng */
+const hemi = new THREE.HemisphereLight(0xffe6f0, 0x220022, 0.9);
+scene.add(hemi);
+const point = new THREE.PointLight(0xff66aa, 1.6, 500);
+point.positio
