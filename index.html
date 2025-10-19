@@ -9,11 +9,9 @@
     margin: 0;
     height: 100%;
     overflow: hidden;
-    background: radial-gradient(ellipse at bottom, #0d0221, #000);
+    background: radial-gradient(circle at center, #1a0029, #000);
   }
-  canvas {
-    display: block;
-  }
+  canvas { display: block; }
 </style>
 </head>
 <body>
@@ -22,24 +20,117 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/geometries/TextGeometry.js"></script>
 
 <script>
+  // ===== Scene setup =====
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 1000);
+  camera.position.set(0, 0, 50);
+
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(innerWidth, innerHeight);
   renderer.setPixelRatio(devicePixelRatio);
   document.body.appendChild(renderer.domElement);
 
-  // === Light ===
-  const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+  // ===== Light setup =====
+  const ambient = new THREE.AmbientLight(0xff99cc, 0.3);
   scene.add(ambient);
-  const pointLight = new THREE.PointLight(0xff99cc, 1.5);
-  pointLight.position.set(20, 20, 20);
-  scene.add(pointLight);
 
-  // === Heart particles ===
+  const point1 = new THREE.PointLight(0xff66cc, 1.2);
+  point1.position.set(25, 15, 30);
+  scene.add(point1);
+
+  const point2 = new THREE.PointLight(0x66ccff, 1);
+  point2.position.set(-25, -10, 30);
+  scene.add(point2);
+
+  const point3 = new THREE.PointLight(0xffffff, 0.3);
+  point3.position.set(0, 0, -30);
+  scene.add(point3);
+
+  // ===== Heart particles =====
   const positions = [];
-  for (let i = 0; i < 4000; i++) {
+  for (let i = 0; i < 5000; i++) {
     const t = Math.random() * Math.PI * 2;
-    const scale = 0.5 + Math.random() * 0.5;
+    const scale = 0.4 + Math.random() * 0.6;
     const x = 16 * Math.pow(Math.sin(t), 3) * scale;
-    const y = (13 * Math.cos(t) - 5 * Math.cos(2*t)*
+    const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale;
+    const z = (Math.random() - 0.5) * 10;
+    positions.push(x, y, z);
+  }
+  const heartGeo = new THREE.BufferGeometry();
+  heartGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const heartMat = new THREE.PointsMaterial({
+    color: 0xff66b2,
+    size: 0.18,
+    transparent: true,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending
+  });
+  const heart = new THREE.Points(heartGeo, heartMat);
+  heart.position.y = 2;
+  scene.add(heart);
+
+  // ===== Background stars =====
+  const starsGeo = new THREE.BufferGeometry();
+  const starPos = [];
+  for (let i = 0; i < 800; i++) {
+    const x = (Math.random() - 0.5) * 400;
+    const y = (Math.random() - 0.5) * 400;
+    const z = (Math.random() - 0.5) * 400;
+    starPos.push(x, y, z);
+  }
+  starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+  const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.8, transparent: true, opacity: 0.8 });
+  const stars = new THREE.Points(starsGeo, starMat);
+  scene.add(stars);
+
+  // ===== Text circle =====
+  const loader = new THREE.FontLoader();
+  loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+    const textMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const circleGroup = new THREE.Group();
+    const text = "Tú chúc bé mãi vui, mãi là bé iu của Tú ❤️     ";
+    const radius = 22;
+
+    for (let i = 0; i < text.length; i++) {
+      const charGeo = new THREE.TextGeometry(text[i], {
+        font: font,
+        size: 1,
+        height: 0.05
+      });
+      const charMesh = new THREE.Mesh(charGeo, textMat);
+      const angle = (i / text.length) * Math.PI * 2;
+      charMesh.position.set(Math.cos(angle) * radius, -15, Math.sin(angle) * radius);
+      charMesh.lookAt(0, -15, 0);
+      circleGroup.add(charMesh);
+    }
+    scene.add(circleGroup);
+
+    // ===== Animation =====
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Heart smooth rotation
+      heart.rotation.y += 0.002;
+      heart.rotation.x = Math.sin(Date.now() * 0.001) * 0.15;
+
+      // Stars subtle motion
+      stars.rotation.y += 0.0005;
+      stars.rotation.x += 0.0003;
+
+      // Circle text rotation
+      circleGroup.rotation.y += 0.0015;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  });
+
+  // ===== Resize =====
+  addEventListener("resize", () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+</script>
+</body>
+</html>
