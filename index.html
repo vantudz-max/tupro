@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="styles.css">
   <title>I Love You bé Duyên ❤️</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="ui">
-    <!-- Tạo nhiều tim để hiệu ứng lung linh -->
-    <div class="love"><div class="love_horizontal"><div class="love_vertical"><div class="love_word">I Love You bé Duyên ❤️</div></div></div></div>
-    <div class="love"><div class="love_horizontal"><div class="love_vertical"><div class="love_word">I Love You bé Duyên ❤️</div></div></div></div>
-    <div class="love"><div class="love_horizontal"><div class="love_vertical"><div class="love_word">I Love You bé Duyên ❤️</div></div></div></div>
-    <div class="love"><div class="love_horizontal"><div class="love_vertical"><div class="love_word">I Love You bé Duyên ❤️</div></div></div></div>
+    <!-- 100 dòng chữ bay tạo hình trái tim -->
+    <!-- Bạn có thể giảm bớt nếu muốn -->
+    <!-- Tất cả chữ đã đổi thành "I Love You bé Duyên ❤️" -->
+    ${Array.from({ length: 100 }, () => `
+    <div class="love">
+      <div class="love_horizontal">
+        <div class="love_vertical">
+          <div class="love_word">I Love You bé Duyên ❤️</div>
+        </div>
+      </div>
+    </div>`).join('')}
   </div>
 </body>
 </html>
