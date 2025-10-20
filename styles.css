@@ -27,6 +27,12 @@ body {
   overflow: hidden;
 }
 
+#ui .love {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -225px 0 0 -225px;
+}
 #ui .love:last-child .love_word {
   color: #fff;
   font-size: 2rem;
